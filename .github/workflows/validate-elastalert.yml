@@ -1,0 +1,29 @@
+name: Validate ElastAlert Queries
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate-elastalert-queries:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install ElastAlert
+        run: |
+          pip install elastalert
+
+      - name: Run ElastAlert to validate queries
+        run: |
+          elastalert-test-rule --schema configmap-vmalertrules.yaml --config ./config.yaml
