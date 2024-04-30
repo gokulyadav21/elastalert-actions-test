@@ -1,0 +1,82 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap-vmalertrules
+data:
+  rule_file_vm.yaml: |+
+    name: VMAgentLocalDiskLimitReached
+    type: any
+    index: logstash-*
+    query_key: site_name
+    filter:
+    - query:
+        query_string:
+          query: 'log: "D400 - Removed old metrics" AND application_name: s3uploader'
+    alert: my_alerts.AlertManager
+    labels:
+      log_ingestion_string: 'D400 - Removed old metrics'
+      severity: major
+      kafka: 'false'
+      smart_alert: 'false'
+      host_impacted:
+      component: 'telemetry'
+      remediation: 'true'
+      alertsrc: ElasticSearch
+      dashboard: https://prod-es-cluster-5.tb-comcast.com/_plugin/kibana/app/kibana#/discover?_g=(refreshInterval:(pause:!t,value:0),time:(from:now-30m,mode:quick,to:now))&_a=(columns:!(_source),filters:!(),index:a43b1860-6565-11ea-bff7-ff7f31a5579c,interval:auto,query:(language:lucene,query:''),sort:!('@timestamp',desc))
+      alertlink: https://prod-alertdashboards-xi-01.tb-comcast.com/alertmanager/
+      wikilink:
+    annotations:
+      description: VMAgent - Error while sending files to S3 and Local Ephemeral storage reached Limit.
+      summary: VMAgent - Error while sending files to S3 and Local Ephemeral storage reached Limit.
+    nextrulename: VMAgentSNSPublishError
+    type: any
+    index: logstash-*
+    query_key: vcmts_ppod
+    filter:
+    - query:
+        query_string:
+          query: 'log: "Unable to Publish" AND application_name: s3uploader'
+    alert: my_alerts.AlertManager
+    labels:
+      log_ingestion_string: 'Unable to Publish'
+      severity: major
+      kafka: 'false'
+      smart_alert: 'false'
+      host_impacted:
+      component: 'telemetry'
+      remediation: 'true'
+      alertsrc: ElasticSearch
+      dashboard: https://prod-es-cluster-5.tb-comcast.com/_plugin/kibana/app/kibana#/discover?_g=(refreshInterval:(pause:!t,value:0),time:(from:now-30m,mode:quick,to:now))&_a=(columns:!(_source),filters:!(),index:a43b1860-6565-11ea-bff7-ff7f31a5579c,interval:auto,query:(language:lucene,query:''),sort:!('@timestamp',desc))
+      alertlink: https://prod-alertdashboards-xi-01.tb-comcast.com/alertmanager/
+      wikilink:
+    annotations:
+      description: VMAgent - Error Unable to Publish SNS after retries.
+      summary: VMAgent - Error Unable to Publish SNS after retries.
+    nextrulename: VMAgentScrapeTimeoutError
+    type: frequency
+    index: logstash-*
+    num_events: 30
+    timeframe:
+      minutes: 5
+    query_key: vcmts_ppod
+    filter:
+    - query:
+        query_string:
+          query: '(log:"from job vcmts_metrics_usperf" OR log:"from job vcmts_metrics_other" OR log:"from job vcmts_metrics_m") AND (log:"*error when  scraping") AND (log:"*TCP address timed out")  AND (application_name:"vmagent")'
+    alert: my_alerts.AlertManager
+    labels:
+      log_ingestion_string: 'error when scraping,TCP address timed out'
+      severity: major
+      kafka: 'false'
+      smart_alert: 'false'
+      host_impacted:
+      component: 'telemetry'
+      remediation: 'true'
+      alertsrc: ElasticSearch
+      dashboard: https://prod-es-cluster-1.tb-comcast.com/_plugin/kibana/app/kibana#/discover?_g=(refreshInterval:(pause:!t,value:0),time:(from:now-30m,mode:quick,to:now))&_a=(columns:!(_source),filters:!(),index:a43b1860-6565-11ea-bff7-ff7f31a5579c,interval:auto,query:(language:lucene,query:''),sort:!('@timestamp',desc))
+      alertlink: https://prod-alertdashboards-xi-01.tb-comcast.com/alertmanager/
+      wikilink:
+    annotations:
+      description: VMAgent - VCMTS Metrics scrape is getting timeout.
+      summary: VMAgent - VCMTS Metrics scrape is getting timeout.
