@@ -23,7 +23,13 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install elastalert
-        # Add any other dependencies needed
+        pip freeze  # Print installed packages for debugging
         
+    - name: Print ElastAlert version
+      run: elastalert --version
+      
+    - name: List files in rules folder
+      run: ls -l rules_folder
+      
     - name: Run ElastAlert validator
       run: elastalert-test-rule --config config.yaml --rules rules_folder
