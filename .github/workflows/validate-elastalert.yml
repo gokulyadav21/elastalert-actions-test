@@ -1,39 +1,21 @@
-name: Test AWS CLI with LocalStack
+name: Validate-YAML
 
 on:
   push:
-    branches:
-      - main
+    branches: [main, dev, preprod]
+  pull_request:
+    branches: [main, dev, preprod]
 
 jobs:
-  test-aws-cli:
+  validate-yaml:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Set up LocalStack
+      - uses: actions/checkout@v2
+      - name: Validate YAML file
         run: |
-          docker run -d -e SERVICES=s3 -p 4566:4566 localstack/localstack
-          sleep 10  # Wait for LocalStack to start
-
-      - name: Configure AWS CLI
-        run: |
-          aws configure set default.s3.endpoint_url http://localhost:4566
-          aws configure set default.region us-east-1  # Set a default region
-
-      - name: List S3 Buckets
-        run: |
-          aws s3 ls
-
-      - name: Create S3 Bucket
-        run: |
-          aws s3 mb s3://test-bucket
-
-      - name: Upload File to S3
-        run: |
-          echo "Hello, LocalStack!" > file.txt
-          aws s3 cp file.txt s3://test-bucket/file.txt
-
-      - name: Clean up
-        run: |
-          aws s3 rm s3://test-bucket/file.txt
-          aws s3 rb s3://test-bucket --force
+          yamllint -d "{extends: default, rules: {line-length: disable}}" configmap-vmalertrules.yaml
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Run Python script to validate YAML
+        run: python .github/workflows/validate-alertrules.py
