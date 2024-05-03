@@ -1,32 +1,26 @@
-name: Validate-ElastAlert
+name: Test AWS CLI with LocalStack
 
 on:
   push:
-    branches: [ main, dev, preprod ]
-  pull_request:
-    branches: [ main, dev, preprod ]
+    branches:
+      - main
 
 jobs:
-  validate-elastalert:
+  test-aws-cli:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-      
-    - name: Set up Docker
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
-    
-    - name: Build Docker image
-      run: |
-        docker build -t elastalert-image .
-    
-    - name: Run Docker container
-      run: |
-        docker run --name elastalert-container elastalert-image
-    
-    - name: Validate ElastAlert rules
-      run: |
-        docker exec elastalert-container elastalert-test-rule --config /path/to/your/config.yaml --rules /path/to/your/rules_folder
+      - name: Set up LocalStack
+        run: docker run -d -e SERVICES=s3 -p 4566:4566 localstack/localstack
+
+      - name: Wait for LocalStack to start
+        run: sleep 10
+
+      - name: Configure AWS CLI
+        run: aws configure set default.s3.endpoint_url http://localhost:4566
+
+      - name: Run AWS CLI commands
+        run: |
+          aws s3 ls
+          aws s3 mb s3://test-bucket
+          aws s3 cp file.txt s3://test-bucket/file.txt
