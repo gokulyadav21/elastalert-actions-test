@@ -30,7 +30,7 @@ def format_and_validate_query(query, idx):
         return False
     return True
 
-file_paths = ['../configmap-vmalertrules.yaml']
+file_paths = ['../../configmap-vmalertrules.yaml']
 invalid_queries = []
 
 for file_path in file_paths:
