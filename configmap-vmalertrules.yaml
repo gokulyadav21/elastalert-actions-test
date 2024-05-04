@@ -12,7 +12,7 @@ data:
     filter:
     - query:
         query_string:
-          query: 'log: "D400 - Removed old metrics" AND application_name: s3uploader'
+          query: 'log: "D400 - doesn't Removed old metrics" AND application_name: s3uploader'
     alert: my_alerts.AlertManager
     labels:
       log_ingestion_string: 'D400 - Removed old metrics'
