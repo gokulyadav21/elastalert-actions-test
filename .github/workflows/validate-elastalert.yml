@@ -14,10 +14,14 @@ jobs:
       - name: Validate YAML file
         run: |
           yamllint -d "{extends: default, rules: {line-length: disable}}" configmap-vmalertrules.yaml
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-      - name: Install sqlvalidator
-        run: pip install sqlvalidator
-      - name: Run Python script to validate YAML
-        run: python .github/workflows/validate-alertrules.py
+      # - uses: actions/setup-python@v5
+      #   with:
+      #     python-version: '3.10'
+      # - name: Install sqlvalidator
+      #   run: pip install sqlvalidator
+      # - name: Run Python script to validate YAML
+      #   run: python .github/workflows/validate-alertrules.py
+      - name: Run Shell Script
+        run: |
+          chmod +x .github/workflows/validate-alertrules.sh
+          .github/workflows/validate-alertrules.sh
