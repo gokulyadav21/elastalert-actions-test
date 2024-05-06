@@ -12,7 +12,7 @@ data:
     filter:
     - query:
         query_string:
-          query: 'log: "D400 - Removed old metrics" AND application_name: s3uploader'
+          query: 'log: "D400 - doesn''t Removed old metrics" AND application_name: s3uploader'
     alert: my_alerts.AlertManager
     labels:
       log_ingestion_string: 'D400 - Removed old metrics'
@@ -36,7 +36,7 @@ data:
     filter:
     - query:
         query_string:
-          query: 'log: "Unable to Publish" AND application_name: s3uploader'
+          query: 'log: "Unable to Publish" 'AND application_name: s3uploader''
     alert: my_alerts.AlertManager
     labels:
       log_ingestion_string: 'Unable to Publish'
@@ -63,7 +63,7 @@ data:
     filter:
     - query:
         query_string:
-          query: '(log:"from job vcmts_metrics_usperf" OR log:"from job vcmts_metrics_other" OR log:"from job vcmts_metrics_m") AND (log:"*error when  scraping") AND (log:"*TCP address timed out")  AND (application_name:"vmagent")'
+          query: '(log:"from job vcmts_metrics_usperf" AND OR log:"from job vcmts_metrics_other" OR log:"from job vcmts_metrics_m") AND (log:"*error when  scraping") AND (log:"*TCP address timed out")  AND (application_name:"vmagent")'
     alert: my_alerts.AlertManager
     labels:
       log_ingestion_string: 'error when scraping,TCP address timed out'
