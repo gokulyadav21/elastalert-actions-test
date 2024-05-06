@@ -131,7 +131,7 @@ def validate_queries(file_paths):
                 return False
     return True
 
-file_paths = ['configmap-vmalertrules.yaml']
+file_paths = ['../../configmap-vmalertrules.yaml']
 if not validate_queries(file_paths):
     sys.exit(1)
 sys.exit(0)
